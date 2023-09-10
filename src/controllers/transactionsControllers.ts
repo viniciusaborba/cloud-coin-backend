@@ -11,16 +11,20 @@ export class TransactionsControllers {
       type: z.enum(['credit', 'debit']),
       user_id: z.string(),
       description: z.string(),
+      receiver: z.string(),
+      category: z.string(),
     })
 
-    const { amount, title, type, user_id, description } = createBodySchema.parse(req.body)
+    const { amount, title, type, user_id, description, receiver, category } = createBodySchema.parse(req.body)
 
     await knex('transactions').insert({
       id: randomUUID(),
       title,
       amount: type === 'credit' ? amount : amount * -1,
       user_id,
-      description
+      description,
+      receiver,
+      category,
     })
 
     return res.status(201).send()
@@ -55,13 +59,15 @@ export class TransactionsControllers {
       title: z.string(),
       amount: z.number(),
       description: z.string(),
+      category: z.string(),
+      receiver: z.string(),
     })
 
     const updateParamsSchema = z.object({
       id: z.string().uuid(),
     })
 
-    const { title, amount, description } = updateBodySchema.parse(req.body)
+    const { title, amount, description, category, receiver } = updateBodySchema.parse(req.body)
     const { id } = updateParamsSchema.parse(req.params)
 
     const transaction = await knex('transactions').where({ id }).first()
@@ -69,6 +75,8 @@ export class TransactionsControllers {
     transaction!.description = description ?? transaction!.description
     transaction!.title = title ?? transaction!.title
     transaction!.amount = amount ?? transaction!.amount
+    transaction!.category = category ?? transaction!.category
+    transaction!.receiver = receiver ?? transaction!.receiver
 
     await knex('transactions').where({ id }).update(transaction!)
 

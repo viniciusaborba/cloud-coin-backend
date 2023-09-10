@@ -16,7 +16,9 @@ declare module 'knex/types/tables' {
       description: string
       created_at: string
       user_id: string
-      amount; number
+      amount: number
+      receiver: string
+      category: string
     }
     goals: {
       id: string

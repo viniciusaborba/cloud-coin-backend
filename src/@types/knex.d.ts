@@ -24,11 +24,11 @@ declare module "knex/types/tables" {
       id: string;
       title: string;
       description: string;
-      created_at: string;
+      created_at: string | Date;
       user_id: string;
       current_amount: number;
       wished_amount: number;
-      initial_date: string;
+      initial_date: string | Date;
       end_date: string;
       category: string;
     };

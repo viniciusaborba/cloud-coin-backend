@@ -13,9 +13,11 @@ export class TransactionsControllers {
       description: z.string(),
       receiver: z.string(),
       category: z.string(),
-      month: z.string(),
-      day: z.string(),
-      year: z.string(),
+      date: z.object({
+        month: z.string(),
+        day: z.string(),
+        year: z.string(),
+      }),
     });
 
     const {
@@ -26,13 +28,11 @@ export class TransactionsControllers {
       description,
       receiver,
       category,
-      month,
-      day,
-      year,
+      date,
     } = createBodySchema.parse(req.body);
 
-    const formatedDay = day.padStart(2, "0");
-    const formatedMonth = month.padStart(2, "0");
+    const formatedDay = date.day.padStart(2, "0");
+    const formatedMonth = date.month.padStart(2, "0");
 
     await knex("transactions").insert({
       id: randomUUID(),
@@ -42,7 +42,9 @@ export class TransactionsControllers {
       description,
       receiver,
       category,
-      created_at: new Date(`${year}-${formatedMonth}-${formatedDay}T03:24:00`),
+      created_at: new Date(
+        `${date.year}-${formatedMonth}-${formatedDay}T03:24:00`
+      ),
     });
 
     return res.status(201).send();

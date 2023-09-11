@@ -15,6 +15,11 @@ export class GoalsControllers {
       end_date: z.string().optional(),
       user_id: z.string().optional(),
       category: z.string().optional(),
+      date: z.object({
+        month: z.string(),
+        day: z.string(),
+        year: z.string(),
+      }),
     });
 
     const {
@@ -26,7 +31,11 @@ export class GoalsControllers {
       user_id,
       wished_amount,
       category,
+      date,
     } = createBodySchema.parse(req.body);
+
+    const formatedDay = date.day.padStart(2, "0");
+    const formatedMonth = date.month.padStart(2, "0");
 
     await knex("goals").insert({
       id: randomUUID(),
@@ -34,7 +43,9 @@ export class GoalsControllers {
       description,
       current_amount,
       wished_amount,
-      initial_date,
+      initial_date: new Date(
+        `${date.year}-${formatedMonth}-${formatedDay}T03:24:00`
+      ),
       end_date,
       user_id,
       category,

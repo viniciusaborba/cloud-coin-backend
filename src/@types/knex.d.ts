@@ -30,6 +30,7 @@ declare module "knex/types/tables" {
       wished_amount: number;
       initial_date: string;
       end_date: string;
+      category: string;
     };
   }
 }
